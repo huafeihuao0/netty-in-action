@@ -28,6 +28,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -47,15 +48,19 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+    
     <dependencies>
+        <!--    ?netty?    -->
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
         </dependency>
+        <!--    ?nia?    -->
         <dependency>
             <groupId>nia</groupId>
             <artifactId>utils</artifactId>
         </dependency>
+        <!--    ?junit?    -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
