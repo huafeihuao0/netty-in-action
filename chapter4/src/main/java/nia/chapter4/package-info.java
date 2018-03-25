@@ -9,8 +9,8 @@
  *
  * Listing 4.4 Asynchronous networking with Netty {@link nia.chapter4.NettyNioServer}
  *
- * Listing 4.5 Writing to a Channel {@link nia.chapter4.ChannelOperationExamples#writingToChannel()}
+ * Listing 4.5 Writing to a Channel {@link nia.chapter4.ChannelThreadSafeExamples#writingToChannel()}
  *
- * Listing 4.6 Using a Channel from many threads {@link nia.chapter4.ChannelOperationExamples#writingToChannelFromManyThreads()}
+ * Listing 4.6 Using a Channel from many threads {@link nia.chapter4.ChannelThreadSafeExamples#writingToChannelFromManyThreads()}
  */
 package nia.chapter4;

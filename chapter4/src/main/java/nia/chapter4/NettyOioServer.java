@@ -11,43 +11,67 @@ import io.netty.channel.socket.oio.OioServerSocketChannel;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 
-/**
- * Listing 4.3 Blocking networking with Netty
- *
- * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
- */
-public class NettyOioServer {
-    public void server(int port)
-            throws Exception {
-        final ByteBuf buf =
-                Unpooled.unreleasableBuffer(Unpooled.copiedBuffer("Hi!\r\n", Charset.forName("UTF-8")));
-        EventLoopGroup group = new OioEventLoopGroup();
-        try {
-            ServerBootstrap b = new ServerBootstrap();
-            b.group(group)
-                    .channel(OioServerSocketChannel.class)
-                    .localAddress(new InetSocketAddress(port))
-                    .childHandler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        public void initChannel(SocketChannel ch)
-                                throws Exception {
-                                ch.pipeline().addLast(
-                                    new ChannelInboundHandlerAdapter() {
-                                        @Override
-                                        public void channelActive(
-                                                ChannelHandlerContext ctx)
-                                                throws Exception {
-                                            ctx.writeAndFlush(buf.duplicate())
-                                                    .addListener(
-                                                            ChannelFutureListener.CLOSE);
-                                        }
-                                    });
-                        }
-                    });
-            ChannelFuture f = b.bind().sync();
-            f.channel().closeFuture().sync();
-        } finally {
-            group.shutdownGracefully().sync();
+/***
+ *  【Netty版阻塞式IO】
+ * */
+public class NettyOioServer
+{
+    /***
+     *  服务
+     * */
+    public void server(int port) throws Exception
+    {
+        //事件循环组
+        EventLoopGroup eventLoopGroup = new OioEventLoopGroup();
+        try
+        {
+            //实例化服务端启动器
+            ServerBootstrap serverBootstrap = new ServerBootstrap()
+                    .group(eventLoopGroup)  //添加事件循环组
+                    .channel(OioServerSocketChannel.class) //阻塞式通道
+                    .localAddress(new InetSocketAddress(port)) //绑定地址
+                    .childHandler(new MyChannelIniter());    //通道初始化器
+
+            //Future回调操作
+            ChannelFuture f = serverBootstrap
+                    .bind() //绑定
+                    .sync()//阻塞式同步，直到发生新的事件
+                    .channel()  //获取内部通道
+                    .closeFuture()  //关闭
+                    .sync();
+        } finally
+        {
+            //同步关闭事件循环组
+            eventLoopGroup.shutdownGracefully()
+                          .sync();
+        }
+    }
+
+    /***
+     *  【自定义的通道处理器初始化器】
+     * */
+    private class MyChannelIniter
+            extends ChannelInitializer<SocketChannel>  //子通道处理器初始化器
+    {
+        /***
+         *  初始化通道的时候回调
+         * */
+        @Override
+        public void initChannel(SocketChannel socketChannel) throws Exception
+        {
+            socketChannel.pipeline()
+              .addLast(new ChannelInboundHandlerAdapter()   //添加最后一个入栈通道处理器
+              {
+                  @Override
+                  public void channelActive(ChannelHandlerContext channelHandlerContext) throws Exception
+                  {
+                      //准备写缓冲
+                      ByteBuf hiBuf = Unpooled.copiedBuffer("Hi!\r\n", Charset.forName("UTF-8"));
+                      final ByteBuf writeBuf = Unpooled.unreleasableBuffer(hiBuf);
+                      channelHandlerContext.writeAndFlush(writeBuf.duplicate())
+                         .addListener(ChannelFutureListener.CLOSE);
+                  }
+              });
         }
     }
 }
