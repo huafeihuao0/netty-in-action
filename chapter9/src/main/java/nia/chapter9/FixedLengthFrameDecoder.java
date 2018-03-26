@@ -6,28 +6,35 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 
 import java.util.List;
 
-/**
- * Listing 9.1 FixedLengthFrameDecoder
- *
- * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
- */
-public class FixedLengthFrameDecoder extends ByteToMessageDecoder {
+/***
+ *  【固定帧解码器】
+ * */
+public class FixedLengthFrameDecoder
+        extends ByteToMessageDecoder //继承自字节转消息解码器
+{
+    //目标大小
     private final int frameLength;
 
-    public FixedLengthFrameDecoder(int frameLength) {
-        if (frameLength <= 0) {
+    public FixedLengthFrameDecoder(int frameLength)
+    {
+        if (frameLength <= 0)
+        {
             throw new IllegalArgumentException(
-                "frameLength must be a positive integer: " + frameLength);
+                    "frameLength must be a positive integer: " + frameLength);
         }
         this.frameLength = frameLength;
     }
 
+    /***
+     *  解码
+     * */
     @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf in,
-        List<Object> out) throws Exception {
-        while (in.readableBytes() >= frameLength) {
-            ByteBuf buf = in.readBytes(frameLength);
-            out.add(buf);
+    protected void decode(ChannelHandlerContext ctx, ByteBuf inBuf, List<Object> outList) throws Exception
+    {
+        while (inBuf.readableBytes() >= frameLength)    //只有当帧大小满足时候才读
+        {
+            ByteBuf buf = inBuf.readBytes(frameLength);
+            outList.add(buf);
         }
     }
 }
