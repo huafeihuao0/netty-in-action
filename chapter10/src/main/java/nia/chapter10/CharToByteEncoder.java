@@ -4,17 +4,18 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 
-/**
- * Listing 10.9 Class CharToByteEncoder
- *
- * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
- */
-public class CharToByteEncoder extends
-    MessageToByteEncoder<Character> {
+/***
+ *  【字符编码器】
+ * */
+public class CharToByteEncoder
+        extends MessageToByteEncoder<Character>
+{
     @Override
-    public void encode(ChannelHandlerContext ctx, Character msg,
-        ByteBuf out) throws Exception {
-        out.writeChar(msg);
+    public void encode(ChannelHandlerContext handlerContext,
+                       Character inMsgChs,
+                       ByteBuf outBuf) throws Exception
+    {
+        outBuf.writeChar(inMsgChs); //转换成字节流
     }
 }
 

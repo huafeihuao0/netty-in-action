@@ -6,17 +6,20 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 
 import java.util.List;
 
-/**
- * Listing 10.8 Class ByteToCharDecoder
- *
- * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
- */
-public class ByteToCharDecoder extends ByteToMessageDecoder {
+/***
+ *  字符解码器
+ * */
+public class ByteToCharDecoder
+        extends ByteToMessageDecoder
+{
     @Override
-    public void decode(ChannelHandlerContext ctx, ByteBuf in,
-        List<Object> out) throws Exception {
-        if (in.readableBytes() >= 2) {
-            out.add(in.readChar());
+    public void decode(ChannelHandlerContext handlerContext,
+                       ByteBuf inBuf,
+                       List<Object> outList) throws Exception
+    {
+        if (inBuf.readableBytes() >= 2) //可读字节必须不小于2
+        {
+            outList.add(inBuf.readChar());//读取一个字符
         }
     }
 }

@@ -7,23 +7,24 @@ import io.netty.handler.codec.TooLongFrameException;
 
 import java.util.List;
 
-/**
- * Listing 10.4 TooLongFrameException
- *
- * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
- */
-
-public class SafeByteToMessageDecoder extends ByteToMessageDecoder {
+/***
+ *  【安全版字节转消息解码器】
+ * */
+public class SafeByteToMessageDecoder
+        extends ByteToMessageDecoder
+{
     private static final int MAX_FRAME_SIZE = 1024;
+
     @Override
-    public void decode(ChannelHandlerContext ctx, ByteBuf in,
-        List<Object> out) throws Exception {
-            int readable = in.readableBytes();
-            if (readable > MAX_FRAME_SIZE) {
-                in.skipBytes(readable);
-                throw new TooLongFrameException("Frame too big!");
+    public void decode(ChannelHandlerContext ctx,
+                       ByteBuf inBuf,
+                       List<Object> outList) throws Exception
+    {
+        int readable = inBuf.readableBytes();
+        if (readable > MAX_FRAME_SIZE)  //如果可读字节大于最大帧大小
+        {
+            inBuf.skipBytes(readable);
+            throw new TooLongFrameException("Frame too big!");  //抛出帧过大异常
         }
-        // do something
-        // ...
     }
 }

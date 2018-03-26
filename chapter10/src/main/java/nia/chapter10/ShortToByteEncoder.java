@@ -4,15 +4,17 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 
-/**
- * Listing 10.5 Class ShortToByteEncoder
- *
- * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
- */
-public class ShortToByteEncoder extends MessageToByteEncoder<Short> {
+/***
+ *  【短整型转字节编码器】
+ * */
+public class ShortToByteEncoder
+        extends MessageToByteEncoder<Short>
+{
     @Override
-    public void encode(ChannelHandlerContext ctx, Short msg, ByteBuf out)
-        throws Exception {
-        out.writeShort(msg);
+    public void encode(ChannelHandlerContext ctx,
+                       Short inShort,
+                       ByteBuf outBuf) throws Exception
+    {
+        outBuf.writeShort(inShort);//写入short
     }
 }

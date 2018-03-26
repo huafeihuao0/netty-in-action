@@ -6,17 +6,18 @@ import io.netty.handler.codec.ReplayingDecoder;
 
 import java.util.List;
 
-/**
- * Listing 10.2 Class ToIntegerDecoder2 extends ReplayingDecoder
- *
- * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
- */
-public class ToIntegerDecoder2 extends ReplayingDecoder<Void> {
-
+/***
+ *  【使用RepayingDecoder实现简便的解码器】
+ * */
+public class ToIntegerDecoder2
+        extends ReplayingDecoder<Void>
+{
     @Override
-    public void decode(ChannelHandlerContext ctx, ByteBuf in,
-        List<Object> out) throws Exception {
-        out.add(in.readInt());
+    public void decode(ChannelHandlerContext handlerContext,
+                       ByteBuf inBuf,
+                       List<Object> outList) throws Exception
+    {
+        outList.add(inBuf.readInt());
     }
 }
 

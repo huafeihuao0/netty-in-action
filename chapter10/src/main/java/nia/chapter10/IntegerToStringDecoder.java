@@ -5,17 +5,18 @@ import io.netty.handler.codec.MessageToMessageDecoder;
 
 import java.util.List;
 
-/**
- * Listing 10.3 Class IntegerToStringDecoder
- *
- * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
- */
-public class IntegerToStringDecoder extends
-    MessageToMessageDecoder<Integer> {
+/***
+ *  【整数转字符串解码器】
+ * */
+public class IntegerToStringDecoder
+        extends MessageToMessageDecoder<Integer>
+{
     @Override
-    public void decode(ChannelHandlerContext ctx, Integer msg,
-        List<Object> out) throws Exception {
-        out.add(String.valueOf(msg));
+    public void decode(ChannelHandlerContext ctx,
+                       Integer inInt,
+                       List<Object> outList) throws Exception
+    {
+        outList.add(String.valueOf(inInt));//转换为字符串
     }
 }
 

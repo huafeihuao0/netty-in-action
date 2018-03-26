@@ -6,17 +6,20 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 
 import java.util.List;
 
-/**
- * Listing 10.1 Class ToIntegerDecoder extends ByteToMessageDecoder
- *
- * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
- */
-public class ToIntegerDecoder extends ByteToMessageDecoder {
+/***
+ *  【字节转整数解码器】
+ * */
+public class ToIntegerDecoder
+        extends ByteToMessageDecoder
+{
     @Override
-    public void decode(ChannelHandlerContext ctx, ByteBuf in,
-        List<Object> out) throws Exception {
-        if (in.readableBytes() >= 4) {
-            out.add(in.readInt());
+    public void decode(ChannelHandlerContext ctx,
+                       ByteBuf inBuf,
+                       List<Object> outList) throws Exception
+    {
+        if (inBuf.readableBytes() >= 4)//int占4个字节
+        {
+            outList.add(inBuf.readInt());
         }
     }
 }
