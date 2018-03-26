@@ -8,80 +8,91 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Listing 7.2 Scheduling a task with a ScheduledExecutorService
- *
- * Listing 7.3 Scheduling a task with EventLoop
- *
- * Listing 7.4 Scheduling a recurring task with EventLoop
- *
- * Listing 7.5 Canceling a task using ScheduledFuture
- *
- * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
- */
-public class ScheduleExamples {
+/***
+ *  【任务调度】
+ * */
+public class ScheduleExamples
+{
     private static final Channel CHANNEL_FROM_SOMEWHERE = new NioSocketChannel();
 
-    /**
-     * Listing 7.2 Scheduling a task with a ScheduledExecutorService
+    /***
+     *  JDK方式
      * */
-    public static void schedule() {
-        ScheduledExecutorService executor =
-                Executors.newScheduledThreadPool(10);
-
-        ScheduledFuture<?> future = executor.schedule(
-            new Runnable() {
+    public static void schedule()
+    {
+        //实例化一个调度执行器服务
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(10);
+        Runnable taskRunnable = new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 System.out.println("Now it is 60 seconds later");
             }
-        }, 60, TimeUnit.SECONDS);
-        //...
+        };
+        //调度执行
+        ScheduledFuture<?> future = executor.schedule(taskRunnable, 60, TimeUnit.SECONDS);
+        //关闭执行器
         executor.shutdown();
     }
 
-    /**
-     * Listing 7.3 Scheduling a task with EventLoop
+    /***
+     *  使用netty的事件循环执行调度任务
      * */
-    public static void scheduleViaEventLoop() {
-        Channel ch = CHANNEL_FROM_SOMEWHERE; // get reference from somewhere
-        ScheduledFuture<?> future = ch.eventLoop().schedule(
-            new Runnable() {
+    public static void scheduleViaEventLoop()
+    {
+        Channel channel = CHANNEL_FROM_SOMEWHERE; // get reference from somewhere
+        Runnable taskRunnable = new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 System.out.println("60 seconds later");
             }
-        }, 60, TimeUnit.SECONDS);
+        };
+
+        //使用事件循环启用调度任务
+        ScheduledFuture<?> future = channel.eventLoop()
+                                           .schedule(taskRunnable, 60, TimeUnit.SECONDS);
     }
 
-    /**
-     * Listing 7.4 Scheduling a recurring task with EventLoop
+    /***
+     *  使用Netty的事件循环执行固定频率的调度任务
      * */
-    public static void scheduleFixedViaEventLoop() {
+    public static void scheduleFixedViaEventLoop()
+    {
         Channel ch = CHANNEL_FROM_SOMEWHERE; // get reference from somewhere
-        ScheduledFuture<?> future = ch.eventLoop().scheduleAtFixedRate(
-           new Runnable() {
-           @Override
-           public void run() {
-               System.out.println("Run every 60 seconds");
-               }
-           }, 60, 60, TimeUnit.SECONDS);
+        Runnable taskRunnable = new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                System.out.println("Run every 60 seconds");
+            }
+        };
+
+        ScheduledFuture<?> future = ch.eventLoop()
+                                      .scheduleAtFixedRate(taskRunnable, 60, 60, TimeUnit.SECONDS);
     }
 
-    /**
-     * Listing 7.5 Canceling a task using ScheduledFuture
+    /***
+     *  使用任务的未来来取消任务调度
      * */
-    public static void cancelingTaskUsingScheduledFuture(){
+    public static void cancelingTaskUsingScheduledFuture()
+    {
         Channel ch = CHANNEL_FROM_SOMEWHERE; // get reference from somewhere
-        ScheduledFuture<?> future = ch.eventLoop().scheduleAtFixedRate(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        System.out.println("Run every 60 seconds");
-                    }
-                }, 60, 60, TimeUnit.SECONDS);
-        // Some other code that runs...
+        Runnable taskRunnabl = new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                System.out.println("Run every 60 seconds");
+            }
+        };
+        ScheduledFuture<?> future = ch.eventLoop()
+                                      .scheduleAtFixedRate(taskRunnabl, 60, 60, TimeUnit.SECONDS);
         boolean mayInterruptIfRunning = false;
+        //毒枭任务调度
         future.cancel(mayInterruptIfRunning);
     }
 }
