@@ -8,29 +8,40 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 
-/**
- * Created by kerr.
- *
- * Listing 6.13 Adding a ChannelFutureListener to a ChannelFuture
- */
-public class ChannelFutures {
+/***
+ *  【将未来监听器添加到通道未来】
+ * */
+public class ChannelFutures
+{
     private static final Channel CHANNEL_FROM_SOMEWHERE = new NioSocketChannel();
     private static final ByteBuf SOME_MSG_FROM_SOMEWHERE = Unpooled.buffer(1024);
 
-    /**
-     * Listing 6.13 Adding a ChannelFutureListener to a ChannelFuture
+
+    /***
+     *  将未来监听器添加到通道未来
      * */
-    public static void addingChannelFutureListener(){
+    public static void addingChannelFutureListener()
+    {
         Channel channel = CHANNEL_FROM_SOMEWHERE; // get reference to pipeline;
-        ByteBuf someMessage = SOME_MSG_FROM_SOMEWHERE; // get reference to pipeline;
-        //...
-        io.netty.channel.ChannelFuture future = channel.write(someMessage);
-        future.addListener(new ChannelFutureListener() {
+        ByteBuf msgBuf = SOME_MSG_FROM_SOMEWHERE; // get reference to pipeline;
+
+        //通道写入，返回通道未来
+        ChannelFuture channelFuture = channel.write(msgBuf);
+        channelFuture.addListener(new ChannelFutureListener()  //添加通道未来监听器
+        {
+            /***
+             *  写操作完成回调
+             * */
             @Override
-            public void operationComplete(io.netty.channel.ChannelFuture f) {
-                if (!f.isSuccess()) {
-                    f.cause().printStackTrace();
-                    f.channel().close();
+            public void operationComplete(ChannelFuture future)
+            {
+                if (!future.isSuccess())//失败
+                {
+                    future.cause()
+                          .printStackTrace();//打印异常栈
+
+                    future.channel()
+                          .close();//关闭通道
                 }
             }
         });

@@ -5,16 +5,19 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
 
-/**
- * Listing 6.1 Releasing message resources
- *
- * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
- */
+/***
+ *  【自定义的入栈资源释放】
+ * */
 @Sharable
-public class DiscardHandler extends ChannelInboundHandlerAdapter {
-
+public class DiscardHandler
+        extends ChannelInboundHandlerAdapter
+{
+    /***
+     *  通道可读回调
+     * */
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
+    public void channelRead(ChannelHandlerContext handlerContext, Object msg)
+    {
         ReferenceCountUtil.release(msg);
     }
 

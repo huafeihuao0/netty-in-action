@@ -2,21 +2,28 @@ package nia.chapter6;
 
 import io.netty.channel.*;
 
-/**
- * Listing 6.14 Adding a ChannelFutureListener to a ChannelPromise
- *
- * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
- */
-public class OutboundExceptionHandler extends ChannelOutboundHandlerAdapter {
+/***
+ *  【出站异常处理】
+ * */
+public class OutboundExceptionHandler
+        extends ChannelOutboundHandlerAdapter
+{
     @Override
-    public void write(ChannelHandlerContext ctx, Object msg,
-        ChannelPromise promise) {
-        promise.addListener(new ChannelFutureListener() {
+    public void write(ChannelHandlerContext handlerContext, Object msg, ChannelPromise promise)
+    {
+        //向承诺中添加监听器
+        promise.addListener(new ChannelFutureListener()
+        {
             @Override
-            public void operationComplete(ChannelFuture f) {
-                if (!f.isSuccess()) {
-                    f.cause().printStackTrace();
-                    f.channel().close();
+            public void operationComplete(ChannelFuture future)
+            {
+                if (!future.isSuccess())    //失败
+                {
+                    future.cause()
+                          .printStackTrace();//打印异常栈
+
+                    future.channel()
+                          .close();//关闭通道
                 }
             }
         });

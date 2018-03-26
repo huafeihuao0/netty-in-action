@@ -6,19 +6,23 @@ import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.ReferenceCountUtil;
 
-/**
- * Listing 6.4 Discarding and releasing outbound data
- *
- * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
- */
+/***
+ *  【出站资源释放】
+ * */
 @Sharable
 public class DiscardOutboundHandler
-    extends ChannelOutboundHandlerAdapter {
+        extends ChannelOutboundHandlerAdapter   //继承自出站处理器适配器
+{
+    /***
+     *  写回调
+     * */
     @Override
-    public void write(ChannelHandlerContext ctx,
-        Object msg, ChannelPromise promise) {
+    public void write(ChannelHandlerContext handlerContext, Object msg, ChannelPromise channelPromise)
+    {
+        //释放资源
         ReferenceCountUtil.release(msg);
-        promise.setSuccess();
+        //设置成功承诺
+        channelPromise.setSuccess();
     }
 }
 

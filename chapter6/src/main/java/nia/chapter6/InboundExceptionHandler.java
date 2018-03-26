@@ -3,16 +3,16 @@ package nia.chapter6;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
-/**
- * Listing 6.12 Basic inbound exception handling
- *
- * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
- */
-public class InboundExceptionHandler extends ChannelInboundHandlerAdapter {
+/***
+ *  【入栈异常处理】
+ * */
+public class InboundExceptionHandler
+        extends ChannelInboundHandlerAdapter
+{
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx,
-        Throwable cause) {
-        cause.printStackTrace();
-        ctx.close();
+    public void exceptionCaught(ChannelHandlerContext handlerContext, Throwable cause)
+    {
+        cause.printStackTrace();//打印异常栈
+        handlerContext.close();//关闭处理器上下文
     }
 }

@@ -9,23 +9,19 @@ import io.netty.util.CharsetUtil;
 
 import static io.netty.channel.DummyChannelHandlerContext.DUMMY_INSTANCE;
 
-/**
- * Created by kerr.
- *
- * Listing 6.6 Accessing the Channel from a ChannelHandlerContext
- *
- * Listing 6.7 Accessing the ChannelPipeline from a ChannelHandlerContext
- *
- * Listing 6.8 Calling ChannelHandlerContext write()
- */
-public class WriteHandlers {
+/***
+ *  【各种不同的写通道】
+ * */
+public class WriteHandlers
+{
     private static final ChannelHandlerContext CHANNEL_HANDLER_CONTEXT_FROM_SOMEWHERE = DUMMY_INSTANCE;
     private static final ChannelPipeline CHANNEL_PIPELINE_FROM_SOMEWHERE = DummyChannelPipeline.DUMMY_INSTANCE;
 
-    /**
-     * Listing 6.6 Accessing the Channel from a ChannelHandlerContext
+    /***
+     *  直接通过通道写
      * */
-    public static void writeViaChannel() {
+    public static void writeViaChannel()
+    {
         ChannelHandlerContext ctx = CHANNEL_HANDLER_CONTEXT_FROM_SOMEWHERE; //get reference form somewhere
         Channel channel = ctx.channel();
         channel.write(Unpooled.copiedBuffer("Netty in Action",
@@ -33,23 +29,23 @@ public class WriteHandlers {
 
     }
 
-    /**
-     * Listing 6.7 Accessing the ChannelPipeline from a ChannelHandlerContext
+    /***
+     *  使用管道写
      * */
-    public static void writeViaChannelPipeline() {
+    public static void writeViaChannelPipeline()
+    {
         ChannelHandlerContext ctx = CHANNEL_HANDLER_CONTEXT_FROM_SOMEWHERE; //get reference form somewhere
         ChannelPipeline pipeline = ctx.pipeline(); //get reference form somewhere
         pipeline.write(Unpooled.copiedBuffer("Netty in Action",
                 CharsetUtil.UTF_8));
-
     }
 
-    /**
-     * Listing 6.8 Calling ChannelHandlerContext write()
+    /***
+     *  使用处理器上下文写
      * */
-    public static void writeViaChannelHandlerContext() {
+    public static void writeViaChannelHandlerContext()
+    {
         ChannelHandlerContext ctx = CHANNEL_HANDLER_CONTEXT_FROM_SOMEWHERE; //get reference form somewhere;
         ctx.write(Unpooled.copiedBuffer("Netty in Action", CharsetUtil.UTF_8));
     }
-
 }

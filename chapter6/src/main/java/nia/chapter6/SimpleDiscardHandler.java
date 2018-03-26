@@ -4,17 +4,16 @@ import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
-/**
- * Listing 6.2 Using SimpleChannelInboundHandler
- *
- * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
- */
+/***
+ *  【使用简单入站处理器实现默认的资源释放功能】
+ * */
 @Sharable
 public class SimpleDiscardHandler
-    extends SimpleChannelInboundHandler<Object> {
+        extends SimpleChannelInboundHandler<Object>
+{
     @Override
-    public void channelRead0(ChannelHandlerContext ctx,
-        Object msg) {
+    public void channelRead0(ChannelHandlerContext ctx, Object msg)
+    {
         // No need to do anything special
     }
 }
