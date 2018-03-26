@@ -11,35 +11,28 @@ import io.netty.channel.socket.oio.OioSocketChannel;
 
 import java.net.InetSocketAddress;
 
-/**
- * Listing 8.3 Incompatible Channel and EventLoopGroup
- *
- * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
- */
-public class InvalidBootstrapClient {
-
-    public static void main(String args[]) {
-        InvalidBootstrapClient client = new InvalidBootstrapClient();
-        client.bootstrap();
-    }
-
+/***
+ *  【不兼容的启动客户端】
+ * */
+public class InvalidBootstrapClient
+{
     /**
      * Listing 8.3 Incompatible Channel and EventLoopGroup
-     * */
-    public void bootstrap() {
-        EventLoopGroup group = new NioEventLoopGroup();
+     */
+    public void bootstrap()
+    {
         Bootstrap bootstrap = new Bootstrap();
-        bootstrap.group(group).channel(OioSocketChannel.class)
-            .handler(new SimpleChannelInboundHandler<ByteBuf>() {
-                @Override
-                protected void channelRead0(
-                    ChannelHandlerContext channelHandlerContext,
-                    ByteBuf byteBuf) throws Exception {
-                    System.out.println("Received data");
-                }
-             });
+        bootstrap.group(new NioEventLoopGroup())    //NIO版本的事件循环组
+                 .channel(OioSocketChannel.class)   //OIO版本的套接字通道，与上述不兼容
+                 .handler(new BootstrapServer.SimplePrintHandler());
         ChannelFuture future = bootstrap.connect(
                 new InetSocketAddress("www.manning.com", 80));
         future.syncUninterruptibly();
+    }
+
+    public static void main(String args[])
+    {
+        InvalidBootstrapClient client = new InvalidBootstrapClient();
+        client.bootstrap();
     }
 }

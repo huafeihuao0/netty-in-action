@@ -11,41 +11,37 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 import java.net.InetSocketAddress;
 
-/**
- * Listing 8.4 Bootstrapping a server
- *
- * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
- * @author <a href="mailto:mawolfthal@gmail.com">Marvin Wolfthal</a>
- */
-public class BootstrapServer {
-
+/***
+ *  【引导启动服务器】
+ * */
+public class BootstrapServer
+{
     /**
      * Listing 8.4 Bootstrapping a server
+     */
+    public void bootstrap()
+    {
+        ServerBootstrap serverBootstrap = new ServerBootstrap();
+        serverBootstrap.group(new NioEventLoopGroup())
+                 .channel(NioServerSocketChannel.class)//设置NIO版本的服务端套接字通道
+                 .childHandler(new SimplePrintHandler());
+
+        ChannelFuture future = serverBootstrap.bind(new InetSocketAddress(8080));
+        future.addListener(new BootstrapDatagramChannel.BindFutureListener());
+    }
+
+
+    /***
+     *  【简单打印处理器】
      * */
-    public void bootstrap() {
-        NioEventLoopGroup group = new NioEventLoopGroup();
-        ServerBootstrap bootstrap = new ServerBootstrap();
-        bootstrap.group(group)
-            .channel(NioServerSocketChannel.class)
-            .childHandler(new SimpleChannelInboundHandler<ByteBuf>() {
-                @Override
-                protected void channelRead0(ChannelHandlerContext channelHandlerContext,
-                    ByteBuf byteBuf) throws Exception {
-                    System.out.println("Received data");
-                }
-            });
-        ChannelFuture future = bootstrap.bind(new InetSocketAddress(8080));
-        future.addListener(new ChannelFutureListener() {
-            @Override
-            public void operationComplete(ChannelFuture channelFuture)
-                throws Exception {
-                if (channelFuture.isSuccess()) {
-                    System.out.println("Server bound");
-                } else {
-                    System.err.println("Bind attempt failed");
-                    channelFuture.cause().printStackTrace();
-                }
-            }
-        });
+    public static class SimplePrintHandler
+            extends SimpleChannelInboundHandler<ByteBuf>
+    {
+        @Override
+        protected void channelRead0(ChannelHandlerContext channelHandlerContext,
+                                    ByteBuf byteBuf) throws Exception
+        {
+            System.out.println("Received data");
+        }
     }
 }

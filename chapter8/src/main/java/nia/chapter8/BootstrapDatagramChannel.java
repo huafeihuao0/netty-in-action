@@ -11,41 +11,56 @@ import io.netty.channel.socket.oio.OioDatagramChannel;
 
 import java.net.InetSocketAddress;
 
-/**
- * Listing 8.8 Using Bootstrap with DatagramChannel
- *
- * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
- * @author <a href="mailto:mawolfthal@gmail.com">Marvin Wolfthal</a>
- */
-public class BootstrapDatagramChannel {
-
+/***
+ *  【引导UDP客户端】
+ * */
+public class BootstrapDatagramChannel
+{
     /**
      * Listing 8.8 Using Bootstrap with DatagramChannel
      */
-    public void bootstrap() {
-        Bootstrap bootstrap = new Bootstrap();
-        bootstrap.group(new OioEventLoopGroup()).channel(
-            OioDatagramChannel.class).handler(
-            new SimpleChannelInboundHandler<DatagramPacket>() {
-                @Override
-                public void channelRead0(ChannelHandlerContext ctx,
-                    DatagramPacket msg) throws Exception {
-                    // Do something with the packet
-                }
+    public void bootstrap()
+    {
+        Bootstrap cliBootstrap = new Bootstrap();
+        cliBootstrap.group(new OioEventLoopGroup()) //设置OIO事件循环组
+                    .channel(OioDatagramChannel.class)//设置OIO版本的数据报通道
+                    .handler(new MySimpleHandler());
+
+        ChannelFuture bindFuture = cliBootstrap.bind(new InetSocketAddress(0));
+        bindFuture.addListener(new BindFutureListener());
+    }
+
+    /***
+     *  【自定义的简单处理器】
+     * */
+    private class MySimpleHandler
+            extends SimpleChannelInboundHandler<DatagramPacket>//传入数据报包
+    {
+        @Override
+        public void channelRead0(ChannelHandlerContext ctx,
+                                 DatagramPacket msg) throws Exception
+        {
+            // Do something with the packet
+        }
+    }
+
+    /***
+     *  【绑定未来监听器】
+     * */
+    public static class BindFutureListener implements ChannelFutureListener
+    {
+        @Override
+        public void operationComplete (ChannelFuture future) throws Exception
+        {
+            if (future.isSuccess())
+            {
+                System.out.println("Channel bound");
+            } else
+            {
+                System.err.println("Bind attempt failed");
+                future.cause()
+                      .printStackTrace();
             }
-        );
-        ChannelFuture future = bootstrap.bind(new InetSocketAddress(0));
-        future.addListener(new ChannelFutureListener() {
-            @Override
-            public void operationComplete(ChannelFuture channelFuture)
-               throws Exception {
-               if (channelFuture.isSuccess()) {
-                   System.out.println("Channel bound");
-               } else {
-                   System.err.println("Bind attempt failed");
-                   channelFuture.cause().printStackTrace();
-               }
-            }
-        });
+        }
     }
 }
