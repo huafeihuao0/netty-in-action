@@ -6,33 +6,26 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import java.io.File;
 import java.io.FileInputStream;
 
-/**
- * Created by kerr.
- *
- * Listing 11.11 Transferring file contents with FileRegion
- */
-public class FileRegionWriteHandler extends ChannelInboundHandlerAdapter {
+
+/***
+ *  【文件域入站理器】
+ * */
+public class FileRegionWriteHandler
+        extends ChannelInboundHandlerAdapter
+{
     private static final Channel CHANNEL_FROM_SOMEWHERE = new NioSocketChannel();
     private static final File FILE_FROM_SOMEWHERE = new File("");
 
     @Override
-    public void channelActive(final ChannelHandlerContext ctx) throws Exception {
+    public void channelActive(final ChannelHandlerContext ctx) throws Exception
+    {
         File file = FILE_FROM_SOMEWHERE; //get reference from somewhere
         Channel channel = CHANNEL_FROM_SOMEWHERE; //get reference from somewhere
-        //...
-        FileInputStream in = new FileInputStream(file);
-        FileRegion region = new DefaultFileRegion(
-                in.getChannel(), 0, file.length());
-        channel.writeAndFlush(region).addListener(
-            new ChannelFutureListener() {
-            @Override
-            public void operationComplete(ChannelFuture future)
-               throws Exception {
-               if (!future.isSuccess()) {
-                   Throwable cause = future.cause();
-                   // Do something
-               }
-            }
-        });
+
+        FileRegion fileRegion = new DefaultFileRegion(new FileInputStream(file).getChannel(),//文件读取通道
+                0, file.length());
+
+        //将文件域写入到远端
+        channel.writeAndFlush(fileRegion);
     }
 }

@@ -14,7 +14,10 @@
     <properties>
         <protobuf-java.version>2.5.0</protobuf-java.version>
     </properties>
+
+    <!--????-->
     <dependencies>
+        <!--protobuf-->
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>

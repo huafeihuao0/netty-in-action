@@ -10,48 +10,24 @@ import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.ContinuationWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
+import nia.chapter11.utils.DefSimpleInboundHandler;
 
-/**
- * Listing 11.6 Supporting WebSocket on the server
- *
- * @author <a href="mailto:norman.maurer@gmail.com">Norman Maurer</a>
- */
-public class WebSocketServerInitializer extends ChannelInitializer<Channel> {
+/***
+ *  【websocket编解码器】
+ * */
+public class WebSocketServerInitializer
+        extends ChannelInitializer<Channel>
+{
     @Override
-    protected void initChannel(Channel ch) throws Exception {
-        ch.pipeline().addLast(
-            new HttpServerCodec(),
-            new HttpObjectAggregator(65536),
-            new WebSocketServerProtocolHandler("/websocket"),
-            new TextFrameHandler(),
-            new BinaryFrameHandler(),
-            new ContinuationFrameHandler());
-    }
-
-    public static final class TextFrameHandler extends
-        SimpleChannelInboundHandler<TextWebSocketFrame> {
-        @Override
-        public void channelRead0(ChannelHandlerContext ctx,
-            TextWebSocketFrame msg) throws Exception {
-            // Handle text frame
-        }
-    }
-
-    public static final class BinaryFrameHandler extends
-        SimpleChannelInboundHandler<BinaryWebSocketFrame> {
-        @Override
-        public void channelRead0(ChannelHandlerContext ctx,
-            BinaryWebSocketFrame msg) throws Exception {
-            // Handle binary frame
-        }
-    }
-
-    public static final class ContinuationFrameHandler extends
-        SimpleChannelInboundHandler<ContinuationWebSocketFrame> {
-        @Override
-        public void channelRead0(ChannelHandlerContext ctx,
-            ContinuationWebSocketFrame msg) throws Exception {
-            // Handle continuation frame
-        }
+    protected void initChannel(Channel ch) throws Exception
+    {
+        ch.pipeline()
+          .addLast(
+                  new HttpServerCodec(),    //http服务端编解码器
+                  new HttpObjectAggregator(65536),//http消息聚合器
+                  new WebSocketServerProtocolHandler("/websocket"),//对指定路由进行升级
+                  new DefSimpleInboundHandler<TextWebSocketFrame>(),//文本帧处理器
+                  new DefSimpleInboundHandler<BinaryWebSocketFrame>(),//二进制帧处理器
+                  new DefSimpleInboundHandler<ContinuationWebSocketFrame>());//持续帧处理器
     }
 }
